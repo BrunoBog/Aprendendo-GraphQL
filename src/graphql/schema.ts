@@ -24,6 +24,7 @@ const typeDefs = `
     }
     `;
 
+    // não faz sentido pois são somente resolvers simples, não precisa fazer quando for assim
 const resolvers = {
     User: {
         id: (user)=> user.id,
