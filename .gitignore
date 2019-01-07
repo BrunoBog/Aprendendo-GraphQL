@@ -2,3 +2,4 @@ node_modules/**/*
 dist/**/*
 pronto/**/*
 yarn-error.log
+config.json
