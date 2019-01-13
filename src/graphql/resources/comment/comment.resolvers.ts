@@ -1,18 +1,20 @@
 import { GraphQLResolveInfo } from "graphql";
 import { DbConnection } from "../../../interfaces/DbConnectionInterface";
-import { decodeBase64 } from "bcryptjs";
 import { Transaction } from "sequelize";
+import { handleError } from "../../../utils/PortUtils";
 
-export const commentResolver = {
+export const commentResolvers = {
 
     Comment: {
         user: (parent, args, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
-            return db.User.findById(parent.get('user'))
+            return db.User
+                .findById(parent.get('user'))
+                .catch(handleError)
         },
 
         post: (parent, args, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.Post
-                .findById(parent.get('post'))
+                .findById(parent.get('post')).catch(handleError)
         }
     },
 
@@ -25,7 +27,7 @@ export const commentResolver = {
                         limit: first,
                         offset: offset
                     }
-                });
+                }).catch(handleError);
         }
     },
 
@@ -33,8 +35,8 @@ export const commentResolver = {
         createComment: (parent, { input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.sequelize.transaction( (t: Transaction ) => {
                     return db.Comment.create(input, {transaction: t})
-                    .catch( () => new Error((`Cant create comment`))
-            })
+                    .catch( () => new Error((`Cant create comment`)) )
+            }).catch(handleError)
         },
         updateComment: (parent, { id, input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.sequelize.transaction((t: Transaction)=> {
@@ -43,7 +45,7 @@ export const commentResolver = {
                         if (!comment) throw Error((`comment with ${id} not found`));
                         return comment
                     })
-            })
+            }).catch(handleError)
         },
         deleteComment: (parent, { id }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.sequelize.transaction( (t: Transaction) => {
@@ -53,7 +55,7 @@ export const commentResolver = {
                     })
                     .then( () => true)
                     .catch( () => false )
-            })
+            }).catch(handleError)
         },
     }
 
