@@ -10,11 +10,12 @@ const env: string = process.env.NODE_ENV.trim() || 'development';
 let config = require(path.resolve(`${__dirname}./../config/config.json`))[env];
 let db = null;
 
-// console.log(config)
-
 //singleton
 if (!db) {
     db = {};
+
+    const operatorsAliases = false;
+    config = Object.assign({ operatorsAliases}, config);
 
     const sequelize: Sequelize.Sequelize = new Sequelize(
         config.database,
@@ -22,7 +23,6 @@ if (!db) {
         config.password,
         config
     );
-
 
     fs
         .readdirSync(__dirname)

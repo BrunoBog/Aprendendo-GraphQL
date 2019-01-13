@@ -10,10 +10,5 @@ db.sequelize.sync()
 .then(() => {
     server.listen(port);
     server.on('error', onError(server));
-    server.on('listening', onListening(server) ); 
+server.on('http://localhost:', onListening(server) ); 
 })
-
-
-
-
-

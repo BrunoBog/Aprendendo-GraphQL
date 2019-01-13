@@ -58,18 +58,26 @@ export default (sequelize: Sequelize.Sequelize, Datatypes: Sequelize.DataTypes):
         {
             tableName: 'users',
             hooks: {
+
                 beforeCreate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
                     const salt = genSaltSync();
                     user.password = hashSync(user.password, salt);
+                },
+
+                beforeUpdate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
+                    if (user.changed('password')) {
+                        const salt = genSaltSync();
+                        user.password = hashSync(user.password, salt);
+                    }
                 }
             }
         });
 
-        // User.associate = (models: MOdelsInterface): void =>{};
+    // User.associate = (models: MOdelsInterface): void =>{};
 
-        User.prototype.isPassword = (encodedPassword: string, password: string): boolean =>{
-            return compareSync(password, encodedPassword)
-        }
-        
-        return User;
+    User.prototype.isPassword = (encodedPassword: string, password: string): boolean => {
+        return compareSync(password, encodedPassword)
+    }
+
+    return User;
 }

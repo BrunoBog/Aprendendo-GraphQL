@@ -1,46 +1,25 @@
 import { makeExecutableSchema } from 'graphql-tools'
 import { userInfo } from 'os';
-const Users: any[] = [
-    {
-        id: '1',
-        name: 'jhon',
-        email: 'nada@nada.com'
-    }
-];
 
-const typeDefs = `
-    type User{
-        id: String!
-        name: String!
-        email: String!
-    }
+import {Query} from './query';
+import {Mutation} from './mutation';
+import { commentTypes } from './resources/comment/comment.schema';
+import { postTypes } from './resources/post/post.schema';
+import { userTypes } from './resources/user/user.schema';
 
-    type Query {
-        allUsers: [User!]
+const SchemaDefinition = `
+    type Schema {
+        query: Query
+        mutation: Mutation
     }
-
-    type Mutation {
-        createUser(name:String!, email:String!): User
-    }
-    `;
-
-    // não faz sentido pois são somente resolvers simples, não precisa fazer quando for assim
-const resolvers = {
-    User: {
-        id: (user)=> user.id,
-        name: (parent)=> parent.name,
-        email: (parent)=> parent.email,
-    },
-    Query: {
-        allUsers: () => Users
-    },
-    Mutation: {
-        createUser: (parent, args) => {
-            const newUser = Object.assign({id: Users.length +1}, args )
-            Users.push(newUser);
-            return newUser;
-        }
-    }
-};
-
-export default makeExecutableSchema({ typeDefs, resolvers });
+`
+export default makeExecutableSchema({ 
+    typeDefs:[
+        SchemaDefinition,
+        Query,
+        Mutation,
+        commentTypes,
+        postTypes,
+        userTypes
+    ]
+});
