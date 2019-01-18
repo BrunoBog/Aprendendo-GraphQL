@@ -29,7 +29,7 @@ export default makeExecutableSchema({
         Mutation,
         commentTypes,
         postTypes,
-        userTypes,
-        resolvers
-    ]
+        userTypes
+    ],
+    resolvers
 });

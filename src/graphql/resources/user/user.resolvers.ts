@@ -2,7 +2,6 @@ import { GraphQLResolveInfo } from "graphql";
 import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { UserInstance } from "../../../models/UserModel";
 import { Transaction } from "sequelize";
-import { parseNamedType } from "graphql/language/parser";
 import { handleError } from "../../../utils/PortUtils";
 
 export const userResolvers = {
@@ -60,7 +59,6 @@ export const userResolvers = {
                     })
             }).catch(handleError);
         },
-
         updateUserPassword: (parent, { id, input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             id = parseInt(id);
             return db.sequelize.transaction((t: Transaction) => {

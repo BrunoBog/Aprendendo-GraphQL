@@ -41,7 +41,7 @@ export const postResolvers = {
         }
     },
 
-    Mutations: {
+    Mutation: {
 
 
         createPost: (parent, { input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
@@ -75,14 +75,14 @@ export const postResolvers = {
         }
     },
 
-    find: (id: number | string, db: DbConnection, callback: Function) => {
-        return db.sequelize.transaction((t: Transaction) => {
-            return db.Post
-                .findById(id)
-                .then((post: PostInstance) => { return callback(post, t); })
-                .catch(Error);
+    // find: (id: number | string, db: DbConnection, callback: Function) => {
+    //     return db.sequelize.transaction((t: Transaction) => {
+    //         return db.Post
+    //             .findById(id)
+    //             .then((post: PostInstance) => { return callback(post, t); })
+    //             .catch(Error);
     
-        }).catch(handleError)
-    }
+    //     }).catch(handleError)
+    // }
 };
 
