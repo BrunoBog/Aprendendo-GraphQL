@@ -21,7 +21,7 @@ class App {
             },
             graphqlHTTP((req) => ({
                 schema: schema,
-                graphiql: process.env.NODE_ENV.trim() === 'development',
+                graphiql: true, //process.env.NODE_ENV === 'development',
                 context: req['context']
             }))
         )

@@ -74,15 +74,5 @@ export const postResolvers = {
             }).catch(handleError)
         }
     },
-
-    // find: (id: number | string, db: DbConnection, callback: Function) => {
-    //     return db.sequelize.transaction((t: Transaction) => {
-    //         return db.Post
-    //             .findById(id)
-    //             .then((post: PostInstance) => { return callback(post, t); })
-    //             .catch(Error);
-    
-    //     }).catch(handleError)
-    // }
 };
 
