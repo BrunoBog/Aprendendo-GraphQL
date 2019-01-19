@@ -7,7 +7,7 @@ const userTypes = `
         email: String!
         photo: String
         createdAt: String!
-        updated: String!
+        updatedAt: String
         posts(fisrt: Int, offset: Int): [Post!]!
     }
 
@@ -29,7 +29,7 @@ const userTypes = `
 `;
 
 const userQuerys = `
-    users(first: Int, offset: Int): [User]
+    users(first: Int, offset: Int): [User!]
     user(id: ID!): User
 `;
 
