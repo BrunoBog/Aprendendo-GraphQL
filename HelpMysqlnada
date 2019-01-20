@@ -1,0 +1,3 @@
+GRANT ALL PRIVILEGES ON *.* TO 'brunobog'@'localhost' IDENTIFIED BY 'S0ngaM0nga';
+
+'brunobog'@'localhost' IDENTIFIED BY 'Ab4%mas&8';
