@@ -1,3 +1,3 @@
-GRANT ALL PRIVILEGES ON *.* TO 'user'@'localhost' IDENTIFIED BY 'Senha';
+GRANT ALL PRIVILEGES ON *.* TO 'brunobog'@'localhost' IDENTIFIED BY 'S0ngaM0nga';
 
-'user'@'localhost' IDENTIFIED BY 'Senha';
+'brunobog'@'localhost' IDENTIFIED BY 'Ab4%mas&8';

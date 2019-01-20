@@ -61,7 +61,9 @@ export default (sequelize: Sequelize.Sequelize, Datatypes: Sequelize.DataTypes):
 
                 beforeCreate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
                     const salt = genSaltSync();
+                    console.log(user.password);
                     user.password = hashSync(user.password, salt);
+                    console.log("encripted" + user.password);
                 },
 
                 beforeUpdate: (user: UserInstance, options: Sequelize.CreateOptions): void => {
