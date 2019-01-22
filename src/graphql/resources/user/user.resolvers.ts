@@ -3,6 +3,9 @@ import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { UserInstance } from "../../../models/UserModel";
 import { Transaction } from "sequelize";
 import { handleError } from "../../../utils/PortUtils";
+import { compose } from "../../composable/Composable.resolver";
+import { authResolver } from "../../composable/auth.resolver";
+import { verifyTokenResolver } from "../../composable/verify-token.resolver";
 
 export const userResolvers = {
     // Como não é um resolver trivial nos temos que implementar o resolver do campo Posts
@@ -17,7 +20,7 @@ export const userResolvers = {
     },
 
     Query: {
-        users: (parent, { first = 10, offset = 0 }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        users: compose(authResolver, verifyTokenResolver)((parent, { first = 10, offset = 0 }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.User
                 .findAll({
                     limit: first,
@@ -27,7 +30,7 @@ export const userResolvers = {
                     if (users.length <=0) throw new Error("Deu Ruim");
                     return users;
                 }).catch(handleError);
-        },
+        }),
 
         user: (parent, { id }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             id = parseInt(id)
