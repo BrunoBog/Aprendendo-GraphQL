@@ -31,13 +31,14 @@ const userTypes = `
 const userQuerys = `
     users(first: Int, offset: Int): [User!]
     user(id: ID!): User
+    currentUser: User
 `;
 
 const userMutations = `
     createUser(user: userCreateInput!): User
-    updateUser(id: ID!, input: UserUpdateInput!): User
-    updateUserPassword(id: ID!, input: userUpdatePasswordInput! ): Boolean
-    userDelete(id: ID!): Boolean
+    updateUser(input: UserUpdateInput!): User
+    updateUserPassword(, input: userUpdatePasswordInput! ): Boolean
+    userDelete: Boolean
 `;
 
 export {

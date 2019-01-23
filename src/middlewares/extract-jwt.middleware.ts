@@ -1,4 +1,4 @@
-import db from './../models'
+import db from './../models/index'
 import * as jwt from 'jsonwebtoken'
 import { RequestHandler, Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from '../utils/utils';
@@ -22,7 +22,7 @@ export const extractJwtMiddleware = (): RequestHandler => {
                 attributes: ['id', 'email']
             }).then((user: UserInstance) => {
                 if (user){
-                    req['context']['user'] = {
+                    req['context']['authUser'] = {
                         id: user.get('id'),
                         email: user.get('email')
                     }

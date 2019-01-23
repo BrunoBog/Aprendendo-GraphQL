@@ -3,6 +3,9 @@ import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { PostInstance } from "../../../models/PostModel";
 import { Transaction } from "sequelize";
 import { handleError } from "../../../utils/PortUtils";
+import { compose } from "../../composable/Composable.resolver";
+import { authResolvers } from "../../composable/auth.resolver";
+import { throwError } from "../../../utils/utils";
 
 export const postResolvers = {
 
@@ -44,35 +47,39 @@ export const postResolvers = {
     Mutation: {
 
 
-        createPost: (parent, { input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        createPost: compose(...authResolvers)((parent, { input }, { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
+            input.author = authuser.id
             return db.sequelize.transaction((t: Transaction) => {
                 return db.Post.create(input, { transaction: t });
             }).catch(handleError)
-        },
+        }),
 
-        updatePost: (parent, { id, input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        updatePost: compose(...authResolvers)((parent, { id, input }, { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
             id = parseInt(id);
             return db.sequelize.transaction((t: Transaction) => {
                 return db.Post.findById(id)
                     .then((post: PostInstance) => {
-                        if (!post) throw new Error(`Post with ${id} not found`);
+                        throwError(!post,`Post with ${id} not found`);
+                        throwError(post.get('author') != authuser.id, "Unauthorized!, only post owner can delete posts")
+                        input.author = authuser.id
                         return post.update(input, { transaction: t });
                     });
             }).catch(handleError)
-        },
+        }),
 
-        deletePost: (parent, { id }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        deletePost: compose(...authResolvers)((parent, { id }, { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
             id = parseInt(id);
             return db.sequelize.transaction((t: Transaction) => {
                 return db.Post.findById(id)
                     .then((post: PostInstance) => {
-                        if (!post) throw new Error(`Post with ${id} not found`);
+                        throwError(!post ,`Post with ${id} not found`);
+                        throwError(post.get('author') != authuser.id, "Unauthorized!, only post owner can delete posts")
                         return post.destroy()
                             .then(() => true)
                             .catch(() => false)
                     })
             }).catch(handleError)
-        }
+        })
     },
 };
 

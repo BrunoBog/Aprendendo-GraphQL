@@ -15,7 +15,6 @@ const postTypes = `
         itle: String!
         content: String!
         photo: String!
-        author: Int!
     }
 `;
 
