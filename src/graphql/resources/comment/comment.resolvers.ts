@@ -2,6 +2,9 @@ import { GraphQLResolveInfo } from "graphql";
 import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { Transaction } from "sequelize";
 import { handleError } from "../../../utils/PortUtils";
+import { authResolvers } from "../../composable/auth.resolver";
+import { compose } from "../../composable/composable.resolver";
+import { throwError } from "../../../utils/utils";
 
 export const commentResolvers = {
 
@@ -32,31 +35,35 @@ export const commentResolvers = {
     },
 
     Mutation: {
-        createComment: (parent, { input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        createComment: compose(...authResolvers)((parent, { input }, { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
+            input.user = authuser.id
             return db.sequelize.transaction( (t: Transaction ) => {
                     return db.Comment.create(input, {transaction: t})
                     .catch( () => new Error((`Cant create comment`)) )
             }).catch(handleError)
-        },
-        updateComment: (parent, { id, input }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        }),
+        updateComment: compose(...authResolvers)((parent,  input , { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
+            let id = parseInt(authuser.id)
             return db.sequelize.transaction((t: Transaction)=> {
                 return db.Comment.findById(id)
                     .then((comment)=>{
-                        if (!comment) throw Error((`comment with ${id} not found`));
-                        return comment
+                        throwError(!comment, `comment with ${id} not found`);
+                        input.id = id
+                        return comment.update(input, {transaction: t})
                     })
             }).catch(handleError)
-        },
-        deleteComment: (parent, { id }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        }),
+        deleteComment: compose(...authResolvers)((parent, input, { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
+            let id = parseInt(authuser.id)
             return db.sequelize.transaction( (t: Transaction) => {
                 return db.Comment.findById(id)
                     .then( (comment) => {
-                        if (!comment) throw Error((`comment with ${id} not found`));
+                        throwError(!comment , `comment with ${id} not found`);
                     })
                     .then( () => true)
                     .catch( () => false )
             }).catch(handleError)
-        },
+        }),
     }
 
 

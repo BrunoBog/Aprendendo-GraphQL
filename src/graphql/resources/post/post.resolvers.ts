@@ -3,9 +3,9 @@ import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { PostInstance } from "../../../models/PostModel";
 import { Transaction } from "sequelize";
 import { handleError } from "../../../utils/PortUtils";
-import { compose } from "../../composable/Composable.resolver";
 import { authResolvers } from "../../composable/auth.resolver";
 import { throwError } from "../../../utils/utils";
+import { compose } from "../../composable/composable.resolver";
 
 export const postResolvers = {
 

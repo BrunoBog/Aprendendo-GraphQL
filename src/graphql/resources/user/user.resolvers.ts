@@ -3,10 +3,10 @@ import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { UserInstance } from "../../../models/UserModel";
 import { Transaction } from "sequelize";
 import { handleError } from "../../../utils/PortUtils";
-import { compose } from "../../composable/Composable.resolver";
 import { authResolver, authResolvers } from "../../composable/auth.resolver";
 import { verifyTokenResolver } from "../../composable/verify-token.resolver";
 import { throwError } from "../../../utils/utils";
+import { compose } from "../../composable/composable.resolver";
 
 export const userResolvers = {
     // Como não é um resolver trivial nos temos que implementar o resolver do campo Posts
