@@ -5,19 +5,22 @@ import { handleError } from "../../../utils/PortUtils";
 import { authResolvers } from "../../composable/auth.resolver";
 import { compose } from "../../composable/composable.resolver";
 import { throwError } from "../../../utils/utils";
+import { DataLoaders } from "../../../interfaces/DataLoadersInterface";
 
 export const commentResolvers = {
 
     Comment: {
-        user: (parent, args, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
-            return db.User
-                .findById(parent.get('user'))
-                .catch(handleError)
+        user: (parent, args, { db, dataLoaders: {userLoader} }: { db: DbConnection, dataLoaders: DataLoaders }, info: GraphQLResolveInfo) => {
+            return userLoader
+            .load(parent.get('user'))
+            .catch(handleError);
+
         },
 
-        post: (parent, args, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
-            return db.Post
-                .findById(parent.get('post')).catch(handleError)
+        post: (parent, args, { db, dataLoaders: {postLoader} }: { db: DbConnection, dataLoaders: DataLoaders }, info: GraphQLResolveInfo) => {
+            return postLoader
+            .load(parent.get('post'))
+            .catch(handleError);
         }
     },
 

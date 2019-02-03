@@ -8,18 +8,18 @@ const postTypes = `
         createdAt: String!
         updated: String
         author: User!
-        comment(fisrt: Int, offset: Int): [Comment!] !
+        comments(fisrt: Int, offset: Int): [Comment!] !
     }
 
     input PostInput{
-        itle: String!
+        title: String!
         content: String!
         photo: String!
     }
 `;
 
 const postQueries = `
-    posts(fist: Int, offset: Int):[Post!]! 
+    posts(first: Int, offset: Int):[Post!]! 
     postByID(id: ID!): Post
 `;
 

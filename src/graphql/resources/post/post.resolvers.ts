@@ -1,3 +1,4 @@
+import * as graphqlFields from 'graphql-fields'
 import { GraphQLResolveInfo } from "graphql";
 import { DbConnection } from "../../../interfaces/DbConnectionInterface";
 import { PostInstance } from "../../../models/PostModel";
@@ -6,15 +7,19 @@ import { handleError } from "../../../utils/PortUtils";
 import { authResolvers } from "../../composable/auth.resolver";
 import { throwError } from "../../../utils/utils";
 import { compose } from "../../composable/composable.resolver";
+import { DataLoaders } from "../../../interfaces/DataLoadersInterface";
 
 export const postResolvers = {
 
     Post: {
-        author: (parent, args, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
-            return db.User.findById(parent.get('author')).catch(handleError);
+        author: (parent, args, { db, dataLoaders: {userLoader} }: {db: DbConnection, dataLoaders: DataLoaders}, info: GraphQLResolveInfo) => {
+            console.log(userLoader)
+            return userLoader
+                .load(parent.get('author'))
+                .catch(handleError);
         },
 
-        comment: (parent, { fisrt = 10, offset = 0 }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
+        comments: (parent, { fisrt = 10, offset = 0 }, { db }: { db: DbConnection }, info: GraphQLResolveInfo) => {
             return db.Comment.findAll({
                 where: { post: parent.get('id') },
                 limit: fisrt,
@@ -46,9 +51,9 @@ export const postResolvers = {
 
     Mutation: {
 
-
-        createPost: compose(...authResolvers)((parent, { input }, { db, authuser }: { db: DbConnection, authuser }, info: GraphQLResolveInfo) => {
-            input.author = authuser.id
+        createPost: compose(...authResolvers)((parent, { input }, { db, authUser }: { db: DbConnection, authUser }, info: GraphQLResolveInfo) => {
+            console.log(authUser)
+            input.author = authUser.id
             return db.sequelize.transaction((t: Transaction) => {
                 return db.Post.create(input, { transaction: t });
             }).catch(handleError)
